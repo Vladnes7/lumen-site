@@ -456,7 +456,7 @@ button { font: inherit; color: inherit; }
 }
 .svc__img { grid-row: span 3; width: 72px; height: 72px; border-radius: 16px; overflow: hidden; background: var(--oat); box-shadow: 0 0 0 1px rgba(195, 154, 85, 0.45); }
 .svc__img img { width: 100%; height: 100%; object-fit: cover; transition: transform 500ms var(--ease-out); }
-.svc__name { font-size: 15px; line-height: 1.4; font-weight: 500; }
+.svc__name { overflow-wrap: anywhere; font-size: 15px; line-height: 1.4; font-weight: 500; }
 .svc__meta { font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
 .svc__meta span { display: inline-flex; align-items: center; gap: 5px; }
 .svc__meta svg { width: 13px; height: 13px; color: var(--gold-deep); }
@@ -649,3 +649,21 @@ button { font: inherit; color: inherit; }
 .hero--plain .sun { color: var(--gold); opacity: 0.7; }
 .hero--plain .hero__scroll { color: var(--muted); }
 .hero--plain .hero__scroll i { background: linear-gradient(var(--gold), transparent); }
+
+/* ---------- Эффекты прокрутки (scroll-fx.js; класс .fx ставится только без «меньше движения») ---------- */
+.fx-progress { position: fixed; inset: 0 0 auto; z-index: 70; height: 3px; background: var(--gold); transform-origin: 0 50%; transform: scaleX(0); pointer-events: none; }
+/* Первый экран: солнце вращается и растёт, текст поднимается и гаснет */
+.fx .sun { rotate: calc(var(--hp, 0) * 70deg); scale: calc(1 + var(--hp, 0) * .28); opacity: calc(.9 - var(--hp, 0) * .7); }
+.fx .hero__inner { translate: 0 calc(var(--hp, 0) * -48px); opacity: calc(1 - var(--hp, 0) * 1.2); }
+/* Фото раскрываются из рамки, внутри «выдыхают» из увеличения (свойство scale не мешает наведению) */
+.fx [data-wipe] { --p: 0; clip-path: inset(calc((1 - var(--p)) * 12%) round var(--r)); }
+.fx [data-wipe] img { scale: calc(1.2 - .2 * var(--p)); }
+.fx [data-wipe].is-done { clip-path: none; }
+.fx [data-drift] { translate: 0 var(--dy, 0px); }
+/* Заголовки секций: слова выезжают из-под линии */
+.fx [data-split] .sw { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .05em .14em; margin: 0 -.05em -.14em; }
+.fx [data-split] .sw__in { display: inline-block; transform: translateY(108%); transition: transform 900ms var(--ease-out); transition-delay: calc(var(--i) * 60ms); }
+.fx [data-split].is-in .sw__in { transform: none; }
+/* Секции наезжают друг на друга скруглённым краем */
+.section + .section { margin-top: -32px; border-radius: 32px 32px 0 0; z-index: 1; }
+@media (min-width: 900px) { .section + .section { margin-top: -48px; border-radius: 48px 48px 0 0; } }

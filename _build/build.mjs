@@ -28,7 +28,7 @@ const img = (src, alt, extra = '') => {
   const [w, h] = size[src] || [800, 1000];
   return `<img src="assets/img/${src}" alt="${alt}" width="${w}" height="${h}" loading="lazy" decoding="async"${extra}>`;
 };
-const glow = (src, alt, cls = '') => `<div class="glow ${cls}">${img(src, alt)}</div>`;
+const glow = (src, alt, cls = '', attrs = '') => `<div class="glow ${cls}"${attrs}>${img(src, alt)}</div>`;
 
 const I = {
   arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
@@ -99,7 +99,7 @@ ${body}
 <footer class="footer">
   <div class="wrap">
     <div class="footer__cta">
-      <h2 class="h2" data-reveal>Выберите <em>удобное</em> время</h2>
+      <h2 class="h2" data-split>Выберите <em>удобное</em> время</h2>
       <div class="footer__actions" data-reveal style="--i:1">
         <a class="btn btn--gold" href="${BOOK}" target="_blank" rel="noopener">Записаться онлайн ${I.arrow}</a>
         <a class="btn btn--glass" href="${TEL}">${I.phone} Позвонить</a>
@@ -125,6 +125,7 @@ ${body}
   <a class="call" href="${TEL}" aria-label="Позвонить ${PHONE}">${I.phone}</a>
 </div>
 <script src="assets/js/site.js" defer></script>
+<script src="assets/js/scroll-fx.js" defer></script>
 ${scripts}
 </body>
 </html>
@@ -160,9 +161,9 @@ const sunRays = Array.from({ length: 72 }, (_, k) => {
 const DIRS = [
   ['hair', 'Волосы', 'dir-hair.jpg', count('hair', 'men'), 'Мелированные волосы после окрашивания в салоне'],
   ['manicure', 'Маникюр и педикюр', 'dir-nails.jpg', count('manicure', 'pedicure'), 'Нюдовый маникюр'],
-  ['aesth', 'Косметология', 'dir-cosmo.jpg', count('aesth', 'apparatus', 'doctor'), 'Кабинет косметолога с креслом'],
+  ['aesth', 'Косметология', 'dir-cosmo.jpg', count('aesth', 'apparatus', 'doctor'), 'Косметологическое кресло у окна'],
   ['brows', 'Брови и ресницы', 'dir-brows.jpg', count('brows'), 'Ресницы после ламинирования'],
-  ['epil-f', 'Эпиляция', 'dir-epil.jpg', count('epil-f', 'epil-m'), 'Гранулы воска для эпиляции'],
+  ['epil-f', 'Эпиляция', 'dir-epil.jpg', count('epil-f', 'epil-m', 'laser-f', 'laser-m'), 'Гранулы воска для эпиляции'],
   ['piercing', 'Пирсинг', 'dir-piercing.jpg', count('piercing'), 'Серьги в хрящике и мочке уха'],
 ];
 const marqueeWords = ['Волосы', 'Маникюр', 'Педикюр', 'Косметология', 'Брови и ресницы', 'Эпиляция', 'Пирсинг', 'Макияж'];
@@ -175,7 +176,7 @@ const COLS = [
 const teaserReviews = REVIEWS.filter((r) => r.teaser || r.text.length < 560);
 
 const home = `
-<section class="hero hero--plain" aria-label="Люмен">
+<section class="hero hero--plain" data-hero aria-label="Люмен">
   <!-- Фото первого экрана: ждём выбор Евгении (варианты: varianty.html). Вернуть блок .hero__media + .hero__shade. -->
   <div class="sun" aria-hidden="true">
     <svg viewBox="0 0 200 200"><g class="sun__spin"><circle class="sun__ring" cx="100" cy="100" r="96" pathLength="1"/><path class="sun__rays" d="${sunRays}" pathLength="1"/></g></svg>
@@ -188,25 +189,24 @@ const home = `
       <a class="btn btn--gold" href="${BOOK}" target="_blank" rel="noopener">Записаться онлайн ${I.arrow}</a>
       <a class="btn btn--line" href="uslugi.html">Услуги и цены</a>
     </div>
-    <a class="hero__rating hero__fade" style="--i:3" href="${REVIEWS_URL}" target="_blank" rel="noopener">${stars}<span><b>5,0</b> на Яндекс Картах · 240 отзывов</span></a>
+    <a class="hero__rating hero__fade" style="--i:3" href="${REVIEWS_URL}" target="_blank" rel="noopener">${stars}<span><b data-count="5,0">5,0</b> на Яндекс Картах · <span data-count="245">245</span> отзывов</span></a>
   </div>
-  <div class="hero__scroll" aria-hidden="true"><i></i>Листайте</div>
 </section>
 
-<div class="marquee" aria-label="Направления салона"><div class="marquee__track">${marqueeGroup(false)}${marqueeGroup(true)}</div></div>
+<div class="marquee" aria-label="Направления салона"><div class="marquee__track" data-velocity>${marqueeGroup(false)}${marqueeGroup(true)}</div></div>
 
 <section class="section section--glow" aria-labelledby="dirs-title">
   <div class="wrap">
     <div class="section__head">
       <div data-reveal>
         <p class="kicker">всё в одном месте</p>
-        <h2 class="h2" id="dirs-title">Шесть <em>направлений</em></h2>
+        <h2 class="h2" data-split id="dirs-title">Шесть <em>направлений</em></h2>
         <p class="lead">${total} услуг в прайсе. Выберите направление, чтобы увидеть цены и фото.</p>
       </div>
       <a class="link-arrow" href="uslugi.html" data-reveal>Весь прайс ${I.arrow}</a>
     </div>
     <ul class="dirs">
-      ${DIRS.map(([id, t, src, n, alt], i) => `<li data-reveal style="--i:${i % 3}"><a class="dir" href="uslugi.html#${id}">${`<div class="glow">${img(src, alt)}<div class="dir__over"><span class="dir__name">${t}</span><span class="dir__count">${plural(n)}</span></div></div>`}</a></li>`).join('\n      ')}
+      ${DIRS.map(([id, t, src, n, alt], i) => `<li data-reveal style="--i:${i % 3}"><a class="dir" href="uslugi.html#${id}">${`<div class="glow" data-wipe>${img(src, alt)}<div class="dir__over"><span class="dir__name">${t}</span><span class="dir__count">${plural(n)}</span></div></div>`}</a></li>`).join('\n      ')}
     </ul>
   </div>
 </section>
@@ -216,22 +216,22 @@ const home = `
     <div class="salon-head">
       <div data-reveal>
         <p class="kicker">наш салон</p>
-        <h2 class="h2" id="salon-title">Троицк, <em>Городская, 20</em></h2>
-        <p class="lead" style="margin-top:18px">Светлый салон в Троицке. Отдельный кабинет косметолога, мойка для волос, места для маникюра и педикюра.</p>
+        <h2 class="h2" data-split id="salon-title">Троицк, <em>Городская, 20</em></h2>
+        <p class="lead" style="margin-top:18px">Светлый салон в Троицке: косметология, мойка для волос, места для маникюра и педикюра.</p>
         <a class="link-arrow" href="salon.html" style="margin-top:28px;color:var(--paper)">Посмотреть салон ${I.arrow}</a>
       </div>
       <div data-reveal style="--i:1">
         <ul class="facts" style="margin-top:0">
           <li><span>Часы работы</span><span>${HOURS}</span></li>
           <li><span>Парковка</span><span>рядом с домом</span></li>
-          <li><span>Оплата</span><span>картой и наличными</span></li>
+          <li><span>Оплата</span><span>банковской картой</span></li>
           <li><span>Wi‑Fi</span><span>для гостей</span></li>
         </ul>
         <p class="brands"><span>DAVINES</span><span>LEBEL</span><span>REVLON</span><span>JANSSEN</span><span>JULIETTE ARMAND</span><span>CIMEL</span><span>LVL</span><span>STUDEX</span></p>
       </div>
     </div>
     <div class="trio">
-      ${[['salon/salon-03.jpg', 'Зал с мойкой для волос', 'Зона для волос'], ['salon/salon-07.jpg', 'Столы мастеров маникюра', 'Маникюр и педикюр'], ['salon/salon-04.jpg', 'Кабинет косметолога с кушеткой', 'Кабинет косметолога']].map(([s, a, cap], i) => `<figure data-reveal style="--i:${i}">${glow(s, a)}<figcaption>${cap}</figcaption></figure>`).join('\n      ')}
+      ${[['salon/salon-03.jpg', 'Зал с мойкой для волос', 'Зона для волос'], ['salon/salon-07.jpg', 'Столы мастеров маникюра', 'Маникюр и педикюр'], ['salon/salon-04.jpg', 'Косметологическая зона с кушеткой', 'Косметологическая зона']].map(([s, a, cap], i) => `<figure data-reveal style="--i:${i}">${glow(s, a, '', ' data-wipe')}<figcaption>${cap}</figcaption></figure>`).join('\n      ')}
     </div>
   </div>
 </section>
@@ -241,7 +241,7 @@ const home = `
     <div class="section__head">
       <div data-reveal>
         <p class="kicker">снято в салоне</p>
-        <h2 class="h2" id="works-title">Работы <em>мастеров</em></h2>
+        <h2 class="h2" data-split id="works-title">Работы <em>мастеров</em></h2>
         <p class="lead">Окрашивание, стрижки, маникюр, пирсинг, брови и ресницы.</p>
       </div>
       <a class="btn btn--gold" href="raboty.html" data-reveal>Все работы ${I.arrow}</a>
@@ -256,14 +256,14 @@ const home = `
   <div class="wrap">
     <div class="section__head">
       <div class="rating-big" data-reveal>
-        <span class="rating-big__num">5,0</span>
-        <div><h2 class="h2" id="rev-title" style="font-size:clamp(32px,5vw,52px)">Что пишут <em>гости</em></h2><p>${stars} 240 отзывов на Яндекс Картах</p></div>
+        <span class="rating-big__num" data-count="5,0">5,0</span>
+        <div><h2 class="h2" data-split id="rev-title" style="font-size:clamp(32px,5vw,52px)">Что пишут <em>гости</em></h2><p>${stars} <span data-count="245">245</span> отзывов на Яндекс Картах</p></div>
       </div>
       <a class="link-arrow" href="otzyvy.html" data-reveal>Все отзывы ${I.arrow}</a>
     </div>
   </div>
   <div class="rev-marquee">
-    <div class="rev-marquee__track">
+    <div class="rev-marquee__track" data-velocity>
       ${teaserReviews.map((r) => reviewCard(r, 0, false)).join('')}
       <div style="display:contents" aria-hidden="true">${teaserReviews.map((r) => reviewCard(r, 0, false)).join('')}</div>
     </div>
@@ -273,11 +273,11 @@ const home = `
 
 // ---------- Услуги ----------
 const BANNER = {
-  hair: 'dir-hair.jpg', men: 'works/hair-08.jpg', manicure: 'dir-nails.jpg', pedicure: 'works/nails-10.jpg', brows: 'dir-brows.jpg',
+  hair: 'dir-hair.jpg', men: 'svc-full/kartochka-124-2760763.jpg', manicure: 'dir-nails.jpg', pedicure: 'works/nails-10.jpg', brows: 'dir-brows.jpg',
   makeup: 'banner-makeup.jpg', aesth: 'salon/salon-04.jpg', apparatus: 'salon/salon-02.jpg', doctor: 'salon/salon-09.jpg',
-  'epil-f': 'dir-epil.jpg', 'epil-m': 'salon/salon-11.jpg', piercing: 'dir-piercing.jpg',
+  'epil-f': 'dir-epil.jpg', 'epil-m': 'salon/salon-11.jpg', 'laser-f': 'salon/salon-04.jpg', 'laser-m': 'salon/salon-09.jpg', piercing: 'dir-piercing.jpg',
 };
-const uslugi = pageHero('Услуги', 'Услуги <em>и цены</em>', `${total} услуг в двенадцати разделах. У каждой услуги фото и цена.`, 'salon/salon-03.jpg') + `
+const uslugi = pageHero('Услуги', 'Услуги <em>и цены</em>', '', 'salon/salon-03.jpg') + `
 <div class="svc-tools">
   <div class="wrap">
     <div class="search" role="search">
@@ -461,12 +461,12 @@ const rabotyScript = `<script>
 
 // ---------- Салон ----------
 const SALON = [
-  ['salon-01.jpg', 'Кабинет косметолога с логотипом Люмен'], ['salon-02.jpg', 'Аппарат для микротоковой терапии'], ['salon-03.jpg', 'Мойка для волос с креслом'],
-  ['salon-04.jpg', 'Кабинет косметолога'], ['salon-05.jpg', 'Место мастера маникюра с лампой'], ['salon-06.jpg', 'Стеллаж с уходовой косметикой'],
+  ['salon-01.jpg', 'Косметологическая зона с логотипом Люмен'], ['salon-02.jpg', 'Аппарат для микротоковой терапии'], ['salon-03.jpg', 'Мойка для волос с креслом'],
+  ['salon-04.jpg', 'Косметологическая зона'], ['salon-05.jpg', 'Место мастера маникюра с лампой'], ['salon-06.jpg', 'Стеллаж с уходовой косметикой'],
   ['salon-07.jpg', 'Столы для маникюра'], ['salon-08.jpg', 'Полки с лаками'], ['salon-09.jpg', 'Кресло для процедур'],
   ['salon-10.jpg', 'Вход в салон с улицы'], ['salon-11.jpg', 'Расходные материалы в стеклянных банках'], ['salon-12.jpg', 'Профессиональная косметика для волос'],
 ];
-const salon = pageHero('Салон', 'Наш <em>салон</em>', 'Троицк, Городская улица, 20. Светлые залы, отдельный кабинет косметолога, мойка для волос и места для маникюра.', 'salon/salon-01.jpg') + `
+const salon = pageHero('Салон', 'Наш <em>салон</em>', 'Троицк, Городская улица, 20. Светлые залы, зона косметологии, мойка для волос и места для маникюра.', 'salon/salon-01.jpg') + `
 <section class="section section--glow" style="padding-top:48px">
   <div class="wrap masonry">
     ${SALON.map(([s, a], i) => `<div class="glow" data-reveal style="--i:${i % 3}">${img('salon/' + s, a)}</div>`).join('\n    ')}
@@ -476,11 +476,11 @@ const salon = pageHero('Салон', 'Наш <em>салон</em>', 'Троицк
   <div class="wrap two-col">
     <div data-reveal>
       <p class="kicker">внутри</p>
-      <h2 class="h2">Что есть <em>в салоне</em></h2>
+      <h2 class="h2" data-split>Что есть <em>в салоне</em></h2>
       <p class="lead" style="margin-top:18px">Всё, что нужно, чтобы спокойно провести у нас пару часов.</p>
     </div>
     <ul class="feature-list" data-reveal style="--i:1">
-      <li><b>Кабинет косметолога</b><span>Отдельная комната с кушеткой и аппаратами для ухода.</span></li>
+      <li><b>Косметология</b><span>Кушетка и аппараты для процедур ухода за лицом и телом.</span></li>
       <li><b>Зона для волос</b><span>Кресла мастеров и мойка с креслом для головы.</span></li>
       <li><b>Маникюр и педикюр</b><span>Места мастеров с лампами и удобное кресло для педикюра.</span></li>
       <li><b>Для гостей</b><span>Парковка рядом с домом, оплата картой, Wi‑Fi.</span></li>
@@ -489,7 +489,7 @@ const salon = pageHero('Салон', 'Наш <em>салон</em>', 'Троицк
 </section>
 <section class="section section--moss">
   <div class="wrap two-col">
-    <div data-reveal><p class="kicker">косметика</p><h2 class="h2">С чем мы <em>работаем</em></h2></div>
+    <div data-reveal><p class="kicker">косметика</p><h2 class="h2" data-split>С чем мы <em>работаем</em></h2></div>
     <div data-reveal style="--i:1">
       <p class="brands" style="margin-top:0;font-size:20px"><span>DAVINES</span><span>LEBEL</span><span>REVLON</span><span>JANSSEN</span><span>JULIETTE ARMAND</span><span>MEDIC CONTROL PEEL</span><span>CIMEL</span><span>LVL</span><span>STUDEX</span></p>
       <a class="link-arrow" href="uslugi.html" style="margin-top:28px">Смотреть услуги ${I.arrow}</a>
@@ -498,7 +498,7 @@ const salon = pageHero('Салон', 'Наш <em>салон</em>', 'Троицк
 </section>`;
 
 // ---------- Отзывы ----------
-const otzyvy = pageHero('Отзывы', 'Отзывы <em>гостей</em>', '', 'works/nails-01.jpg', `<div class="rating-big hero__fade" style="--i:1;margin-top:24px"><span class="rating-big__num">5,0</span><p>${stars}<br>240 отзывов на Яндекс Картах</p></div>`) + `
+const otzyvy = pageHero('Отзывы', 'Отзывы <em>гостей</em>', '', 'works/nails-01.jpg', `<div class="rating-big hero__fade" style="--i:1;margin-top:24px"><span class="rating-big__num" data-count="5,0">5,0</span><p>${stars}<br><span data-count="245">245</span> отзывов на Яндекс Картах</p></div>`) + `
 <section class="section section--glow" style="padding-top:48px">
   <div class="wrap">
     <div class="reviews--all">
@@ -542,7 +542,7 @@ const heroText = (align) => `
       <a class="btn btn--gold" href="${BOOK}" target="_blank" rel="noopener">Записаться онлайн ${I.arrow}</a>
       <a class="btn btn--line" href="uslugi.html">Услуги и цены</a>
     </div>
-    <a class="hero__rating hero__fade" style="--i:3" href="${REVIEWS_URL}" target="_blank" rel="noopener">${stars}<span><b>5,0</b> на Яндекс Картах · 240 отзывов</span></a>`;
+    <a class="hero__rating hero__fade" style="--i:3" href="${REVIEWS_URL}" target="_blank" rel="noopener">${stars}<span><b data-count="5,0">5,0</b> на Яндекс Картах · <span data-count="245">245</span> отзывов</span></a>`;
 const sunSvg = `<div class="sun" aria-hidden="true"><svg viewBox="0 0 200 200"><g class="sun__spin"><circle class="sun__ring" cx="100" cy="100" r="96" pathLength="1"/><path class="sun__rays" d="${sunRays}" pathLength="1"/></g></svg></div>`;
 const varianty = `
 <section class="hv hv1" id="v1" aria-label="Вариант 1">
@@ -560,7 +560,7 @@ const varianty = `
   <div class="hv2__center">${heroText()}</div>
 </section>
 <section class="hv hv3" id="v3" aria-label="Вариант 3" hidden>
-  <div class="hv3__media" data-parallax="0.12">${img('salon/salon-01.jpg', 'Кабинет косметолога в салоне Люмен')}</div>
+  <div class="hv3__media" data-parallax="0.12">${img('salon/salon-01.jpg', 'Косметологическая зона в салоне Люмен')}</div>
   <div class="hv3__card">${heroText()}</div>
 </section>
 <div class="hv-switch" role="group" aria-label="Варианты первого экрана">
@@ -583,7 +583,7 @@ const PAGES = [
   ['uslugi.html', 'Услуги и цены · Люмен, Троицк', `Прайс салона Люмен: ${total} услуг. Стрижки, окрашивание, маникюр, педикюр, косметология, эпиляция, пирсинг.`, uslugi, uslugiScript],
   ['raboty.html', 'Работы мастеров · Люмен, Троицк', 'Фото работ мастеров салона Люмен: окрашивание, стрижки, маникюр, пирсинг, брови и ресницы.', raboty, rabotyScript],
   ['salon.html', 'Салон · Люмен, Троицк', 'Как выглядит салон Люмен на Городской улице, 20 в Троицке.', salon, ''],
-  ['otzyvy.html', 'Отзывы · Люмен, Троицк', 'Отзывы гостей салона Люмен. Рейтинг 5,0 на Яндекс Картах, 240 отзывов.', otzyvy, ''],
+  ['otzyvy.html', 'Отзывы · Люмен, Троицк', 'Отзывы гостей салона Люмен. Рейтинг 5,0 на Яндекс Картах, 245 отзывов.', otzyvy, ''],
   ['kontakty.html', 'Контакты · Люмен, Троицк', `Салон Люмен: ${ADDRESS}. ${HOURS}. ${PHONE}.`, kontakty, ''],
 ];
 for (const [file, title, description, body, scripts] of PAGES) {
